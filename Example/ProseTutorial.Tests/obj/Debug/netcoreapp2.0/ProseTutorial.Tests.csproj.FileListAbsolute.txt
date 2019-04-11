@@ -1,0 +1,17 @@
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.Tests.deps.json
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.Tests.runtimeconfig.json
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.Tests.runtimeconfig.dev.json
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.Tests.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.Tests.pdb
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/bin/Debug/netcoreapp2.0/ProseTutorial.pdb
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.csprojAssemblyReference.cache
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.csproj.CoreCompileInputs.cache
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.AssemblyInfoInputs.cache
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.AssemblyInfo.cs
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.csproj.CopyComplete
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.dll
+/Users/xrc/Repository/prose/DslAuthoringTutorial/part2b-complete/ProseTutorial.Tests/obj/Debug/netcoreapp2.0/ProseTutorial.Tests.pdb
