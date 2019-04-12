@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NonterminalNode rule="Substring">
+  <VariableNode symbol="v" />
+  <NonterminalNode rule="RelPos">
+    <VariableNode symbol="v" />
+    <LiteralNode symbol="rr" type="ProseTutorial.Regex2">
+      <Regex2 Item1="\s+" Item2="\w+" />
+    </LiteralNode>
+  </NonterminalNode>
+  <NonterminalNode rule="AbsPos">
+    <VariableNode symbol="v" />
+    <LiteralNode symbol="k" type="System.Int32">-1</LiteralNode>
+  </NonterminalNode>
+</NonterminalNode>

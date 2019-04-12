@@ -18,6 +18,7 @@ namespace ProseTutorial
     public class SubstringTest
     {
         private const string GrammarPath = @"../../../../ProseTutorial/synthesis/grammar/substring.grammar";
+        private const string SavedProgramAST = @"../../../../ProgramAST.xml";
 
         [TestMethod]
         public void TestLearnSubstringOneExample()
@@ -39,7 +40,28 @@ namespace ProseTutorial
 
             var se = new ASTSerialization.Serialization(grammar.Value);
             var xe = se.PrintXML(topProgram);
+            xe.Save(SavedProgramAST);
             topProgram = se.Parse(xe); // var topProgram is ok. ==> ASTSerialization.Serialization method
+
+            var output = topProgram.Invoke(input) as string;
+            Assert.AreEqual("Miller", output);
+
+            State input2 = State.CreateForExecution(grammar.Value.InputSymbol, "Courtney Lynch");
+            var output2 = topProgram.Invoke(input2) as string;
+            Assert.AreEqual("Lynch", output2);
+        }
+        [TestMethod]
+        public void TestLearnSubstringOneExampleWithASTLoad()
+        {
+            Result<Grammar> grammar = CompileGrammar();
+            SynthesisEngine prose = ConfigureSynthesis(grammar.Value);
+
+            State input = State.CreateForExecution(grammar.Value.InputSymbol, "Toby Miller");
+            var examples = new Dictionary<State, object> {{input, "Miller"}};
+
+            var se = new ASTSerialization.Serialization(grammar.Value);
+            var xe = System.Xml.Linq.XElement.Load(new FileStream(SavedProgramAST,FileMode.Open));
+            var topProgram = se.Parse(xe); // var topProgram is ok. ==> ASTSerialization.Serialization method
 
             var output = topProgram.Invoke(input) as string;
             Assert.AreEqual("Miller", output);

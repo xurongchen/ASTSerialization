@@ -43,27 +43,7 @@ namespace ASTSerialization
                     XElement xe = new XElement("LiteralNode");
                     var literalNode = node as LiteralNode;
                     xe.SetAttributeValue("symbol",literalNode.Symbol.ToString());
-                    switch(literalNode.Value.GetType().FullName.ToString())
-                    {
-                        case "System.Int32":
-                            xe.SetAttributeValue("type",literalNode.Value.GetType().FullName.ToString());
-                            xe.Add(literalNode.Value.ToString());
-                            break;
-                        case "System.string":
-                            xe.SetAttributeValue("type",literalNode.Value.GetType().FullName.ToString());
-                            xe.Add(literalNode.Value);
-                            break;
-                        default:
-                        {
-                            var iobj = literalNode.Value as IObjSerializable;
-                            if(iobj==null)
-                                throw(new NotSupportedException("Type " + literalNode.Value.GetType().FullName.ToString() 
-                                    + " wants to be serialized must finish the interface 'IObjSerializable' first."));
-                            xe.SetAttributeValue("type",iobj.getSerializedType().FullName.ToString());
-                            xe.Add(iobj.serialize());
-                            break;
-                        }
-                    }
+                    fillXElement(literalNode.Value,xe);
                     return xe;
                 }
                 case "Microsoft.ProgramSynthesis.AST.VariableNode":
@@ -89,7 +69,6 @@ namespace ASTSerialization
                     throw(new FormatException("TerminalNode is abstract node!"));
                 case "NonterminalNode":
                 {
-                    // var symbolName = xe.Attribute("symbol").Value;
                     var ruleName = xe.Attribute("rule").Value;
                     var grammarRule = (NonterminalRule) grammar.Rule(ruleName);
                     var children = new ProgramNode[xe.Elements().Count()];
@@ -107,35 +86,7 @@ namespace ASTSerialization
                 case "LiteralNode":
                 {
                     var symbolName = xe.Attribute("symbol").Value;
-                    var typeName = xe.Attribute("type").Value;
-                    Type type = Type.GetType(typeName);
-                    Object obj = null;
-                    switch(type.FullName.ToString())
-                    {
-                        case "System.Int32":
-                            obj = Int32.Parse(xe.Value);
-                            break;
-                        case "System.string":
-                            obj = xe.Value;
-                            break;
-                        default:
-                        {
-                            if(type==null)
-                                throw(new TypeAccessException("Type " + typeName + " was not found!"));
-                            var serializedObjct = xe.FirstNode;
-                            try
-                            {
-                                obj = Activator.CreateInstance(type,serializedObjct);
-                            }
-                            catch(MissingMethodException)
-                            {
-                                throw(new MissingMethodException(type.GetType().FullName.ToString()
-                                    + " does not implement the construction fuction with XElement for deserialization."));
-                            }
-                            break;
-                        }
-                    }
-                    var node = new LiteralNode(grammar.Symbol(symbolName),obj);
+                    var node = new LiteralNode(grammar.Symbol(symbolName),makeObject(xe));
                     return node;
                 }
                 case "VariableNode":
@@ -150,6 +101,146 @@ namespace ASTSerialization
                     throw(new NotImplementedException("LetNode is not supported yet!"));
                 default:
                     throw(new FormatException("Unknown XML node label!"));
+            }
+        }
+        private object makeObject(XElement xe)
+        {
+            var typeName = xe.Attribute("type").Value;
+            Type type = Type.GetType(typeName);
+            Object obj = null;
+            switch(type.FullName.ToString())
+            {
+                case "System.Int32":
+                    obj = Int32.Parse(xe.Value);
+                    break;
+                case "System.Int16":
+                    obj = Int16.Parse(xe.Value);
+                    break;
+                case "System.Int64":
+                    obj = Int64.Parse(xe.Value);
+                    break;
+                case "System.UInt16":
+                    obj = UInt16.Parse(xe.Value);
+                    break;
+                case "System.UInt32":
+                    obj = UInt32.Parse(xe.Value);
+                    break;
+                case "System.UInt64":
+                    obj = UInt64.Parse(xe.Value);
+                    break;
+                case "System.Single":
+                    obj = Single.Parse(xe.Value);
+                    break;
+                case "System.Double":
+                    obj = Double.Parse(xe.Value);
+                    break;
+                case "System.Decimal":
+                    obj = Decimal.Parse(xe.Value);
+                    break;
+                case "System.string":
+                    obj = xe.Value;
+                    break;
+                case "System.Boolean":
+                    obj = Boolean.Parse(xe.Value);
+                    break;
+                case "System.Char":
+                    obj = Char.Parse(xe.Value);
+                    break;
+                case "System.Byte":
+                    obj = Byte.Parse(xe.Value);
+                    break;
+                case "System.SByte":
+                    obj = SByte.Parse(xe.Value);
+                    break;
+                default:
+                {
+                    if(type==null)
+                        throw(new TypeAccessException("Type " + typeName + " was not found!"));
+                    var serializedObjct = xe.FirstNode;
+                    try
+                    {
+                        obj = Activator.CreateInstance(type,serializedObjct);
+                    }
+                    catch(MissingMethodException)
+                    {
+                        throw(new MissingMethodException(type.GetType().FullName.ToString()
+                            + " does not implement the construction fuction with XElement for deserialization."));
+                    }
+                    break;
+                }
+            }
+            return obj;
+        }
+        private void fillXElement(object obj,XElement xe)
+        {
+            switch(obj.GetType().FullName.ToString())
+            {
+                case "System.Int32":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Int16":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Int64":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.UInt16":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.UInt32":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.UInt64":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Single":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Double":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Decimal":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.string":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj);
+                    break;
+                case "System.Boolean":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Char":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.Byte":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                case "System.SByte":
+                    xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
+                    xe.Add(obj.ToString());
+                    break;
+                default:
+                {
+                    var iobj = obj as IObjSerializable;
+                    if(iobj==null)
+                        throw(new NotSupportedException("Type " + obj.GetType().FullName.ToString() 
+                            + " wants to be serialized must finish the interface 'IObjSerializable' first."));
+                    xe.SetAttributeValue("type",iobj.getSerializedType().FullName.ToString());
+                    xe.Add(iobj.serialize());
+                    break;
+                }
             }
         }
     }
