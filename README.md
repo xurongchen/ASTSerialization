@@ -1,5 +1,5 @@
 # ASTSerialization
-Serialization and deserialization implement for Microsoft.ProgramSynthesis.AST.
+Serialization and deserialization implementations for Microsoft.ProgramSynthesis.AST.
 
 This repository is related to the repository [Microsoft.prose](https://github.com/Microsoft/prose).
 
