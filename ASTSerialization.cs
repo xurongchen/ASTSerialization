@@ -103,7 +103,7 @@ namespace ASTSerialization
                     throw(new FormatException("Unknown XML node label!"));
             }
         }
-        private object makeObject(XElement xe)
+        public object makeObject(XElement xe)
         {
             var typeName = xe.Attribute("type").Value;
             Type type = Type.GetType(typeName);
@@ -171,7 +171,7 @@ namespace ASTSerialization
             }
             return obj;
         }
-        private void fillXElement(object obj,XElement xe)
+        public void fillXElement(object obj,XElement xe)
         {
             switch(obj.GetType().FullName.ToString())
             {
