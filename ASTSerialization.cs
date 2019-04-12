@@ -137,7 +137,7 @@ namespace ASTSerialization
                 case "System.Decimal":
                     obj = Decimal.Parse(xe.Value);
                     break;
-                case "System.string":
+                case "System.String":
                     obj = xe.Value;
                     break;
                 case "System.Boolean":
@@ -211,7 +211,7 @@ namespace ASTSerialization
                     xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
                     xe.Add(obj.ToString());
                     break;
-                case "System.string":
+                case "System.String":
                     xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
                     xe.Add(obj);
                     break;
