@@ -14,11 +14,22 @@ namespace ASTSerialization
     }
     public class Serialization
     {
+        public static Serialization instance = new Serialization();
         private Grammar grammar;
         public Serialization(Grammar _grammar)
         {
             grammar = _grammar;
         }
+        public Serialization()
+        {
+            grammar = null;
+        }
+        public void grammarSetter(Grammar _grammar)
+        {
+            if(grammar == null)
+                grammar = _grammar;
+        }
+        
         public XElement PrintXML(ProgramNode node)
         {
             switch(node.GetType().FullName.ToString())
@@ -103,12 +114,15 @@ namespace ASTSerialization
                     throw(new FormatException("Unknown XML node label!"));
             }
         }
-        public object makeObject(XElement xe)
+        public static object makeObject(XElement xe)
         {
             var typeName = xe.Attribute("type").Value;
             Type type = Type.GetType(typeName);
+            if(type==null)
+                throw(new TypeLoadException("Type " + typeName + " not found!"));
             Object obj = null;
-            switch(type.FullName.ToString())
+            var objFullName = type.FullName.ToString();
+            switch(objFullName)
             {
                 case "System.Int32":
                     obj = Int32.Parse(xe.Value);
@@ -154,9 +168,40 @@ namespace ASTSerialization
                     break;
                 default:
                 {
+                    // Support more common non-basic class
+                    var ListNamePrefix = "System.Collections.Generic.List";
+                    if(objFullName.Length>=ListNamePrefix.Length && objFullName.Substring(0,ListNamePrefix.Length)==ListNamePrefix)
+                    {
+                        try
+                        {
+                            obj = Activator.CreateInstance(type);
+                        }
+                        catch(MissingMethodException)
+                        {
+                            throw(new MissingMethodException("Deserialization error happened when processing List"));
+                        }
+                        dynamic lobj = obj;
+                        if(lobj==null)
+                            throw(new InvalidCastException("List object convert error."));
+                        foreach(var child in xe.Elements("Attr-ListElement"))
+                        {
+                            dynamic childObj = makeObject(child);
+                            lobj.Add(childObj);
+                        }
+                        break;
+                    }
+                    // class ProgramNode
+                    if(objFullName==typeof(ProgramNode).FullName.ToString())
+                    {
+                        if(instance.grammar == null)
+                            throw(new NullReferenceException("Deserialization of ProgramNode must call 'grammar.Setter' first."));
+                        obj = instance.Parse(xe.FirstNode as XElement);
+                        break;
+                    }
+                    // Other class type
                     if(type==null)
                         throw(new TypeAccessException("Type " + typeName + " was not found!"));
-                    var serializedObjct = xe.FirstNode;
+                    var serializedObjct = xe.FirstNode as XElement;
                     try
                     {
                         obj = Activator.CreateInstance(type,serializedObjct);
@@ -171,9 +216,10 @@ namespace ASTSerialization
             }
             return obj;
         }
-        public void fillXElement(object obj,XElement xe)
+        public static void fillXElement(object obj,XElement xe)
         {
-            switch(obj.GetType().FullName.ToString())
+            var objFullName = obj.GetType().FullName.ToString();
+            switch(objFullName)
             {
                 case "System.Int32":
                     xe.SetAttributeValue("type",obj.GetType().FullName.ToString());
@@ -233,11 +279,33 @@ namespace ASTSerialization
                     break;
                 default:
                 {
+                    // Support more common non-basic class
+                    var ListNamePrefix = "System.Collections.Generic.List";
+                    if(objFullName.Length>=ListNamePrefix.Length && objFullName.Substring(0,ListNamePrefix.Length)==ListNamePrefix)
+                    {
+                        xe.SetAttributeValue("type",objFullName);
+                        dynamic lobj = obj;
+                        foreach(var item in lobj)
+                        {
+                            XElement child = new XElement("Attr-ListElement");
+                            fillXElement(item,child);
+                            xe.Add(child);
+                        }
+                        break;
+                    }
+                    // class ProgramNode
+                    if(typeof(ProgramNode).IsInstanceOfType(obj))
+                    {
+                        xe.SetAttributeValue("type",typeof(ProgramNode).AssemblyQualifiedName.ToString());
+                        xe.Add(instance.PrintXML(obj as ProgramNode));
+                        break;
+                    }
+                    // Other class type
                     var iobj = obj as IObjSerializable;
                     if(iobj==null)
                         throw(new NotSupportedException("Type " + obj.GetType().FullName.ToString() 
                             + " wants to be serialized must finish the interface 'IObjSerializable' first."));
-                    xe.SetAttributeValue("type",iobj.getSerializedType().FullName.ToString());
+                    xe.SetAttributeValue("type",iobj.GetType().AssemblyQualifiedName.ToString());
                     xe.Add(iobj.serialize());
                     break;
                 }
